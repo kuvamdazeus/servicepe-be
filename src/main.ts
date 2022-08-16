@@ -14,6 +14,8 @@ function initializeRoutes(routesPath: string) {
   const routeFiles = fs.readdirSync(routesPath);
   const baseRoute = routesPath.slice(routesPath.indexOf("api")).replace("api", "/");
 
+  console.log(routeFiles);
+
   routeFiles.forEach((routeFile) => {
     if (!routeFile.includes(".")) {
       return initializeRoutes(routesPath + "/" + routeFile);

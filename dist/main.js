@@ -14,6 +14,7 @@ const apiRoutesPath = __dirname + "/api";
 function initializeRoutes(routesPath) {
     const routeFiles = fs_1.default.readdirSync(routesPath);
     const baseRoute = routesPath.slice(routesPath.indexOf("api")).replace("api", "/");
+    console.log(routeFiles);
     routeFiles.forEach((routeFile) => {
         if (!routeFile.includes(".")) {
             return initializeRoutes(routesPath + "/" + routeFile);
