@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(uuid())
+  phone      String   @unique
+  name       String
+  location   String
+  image      String
+  dob        BigInt
+  created_at DateTime @default(now())
+
+  jobs             Job[]
+  jobProfiles      JobProfile[]
+  jobProfileOffers JobProfileOffer[] // tracks the offers made to worker job profile
+}
+
+model Verification {
+  id         String   @id @default(uuid())
+  phone      String   @unique
+  otp        Int // 4-digit integer
+  created_at DateTime @default(now())
+}
+
+model Job {
+  id           String @id @default(uuid())
+  user_id      String
+  category     String // mechanic | helper ...
+  images       Json? // [image_url | null, image_url | null, image_url | null]
+  duration     Int? // 3 | 4 | 5 ... hours / day
+  payment_mode String // "money" | "product+money" | "product"
+  daily_rate   Int
+  description  String
+  location     String
+
+  user      User       @relation(fields: [user_id], references: [id])
+  jobOffers JobOffer[]
+}
+
+model JobProfile {
+  id           String @id @default(uuid())
+  user_id      String
+  category     String
+  images       Json
+  duration     Int? // null means flexible
+  payment_mode String // "money" | "product+money" | "product"
+  daily_rate   Int
+  description  String
+  location     String
+
+  user             User              @relation(fields: [user_id], references: [id])
+  jobOffers        JobOffer[]
+  jobProfileOffers JobProfileOffer[]
+}
+
+// WORKER makes an offer with HIS job profile to an already made JOB REQUEST
+model JobOffer {
+  id             String  @id @default(uuid())
+  job_profile_id String
+  job_id         String
+  accepted       Boolean @default(false)
+  metadata       Json // fields according to the job request
+
+  job        Job        @relation(fields: [job_id], references: [id])
+  jobProfile JobProfile @relation(fields: [job_profile_id], references: [id])
+}
+
+// CLIENT makes an offer with desired fields on worker's job profile
+model JobProfileOffer {
+  id             String  @id @default(uuid())
+  user_id        String // user who created the offer
+  job_profile_id String
+  accepted       Boolean @default(false)
+  metadata       Json // fields according to the job profile
+
+  user       User       @relation(fields: [user_id], references: [id])
+  jobProfile JobProfile @relation(fields: [job_profile_id], references: [id])
+}
+
+//model ChatRoom {
+//  id      String @id @default(uuid())
+//  room    String
+//  user_id String
+//
+//  user User @relation(fields: [user_id], references: [id])
+//}
