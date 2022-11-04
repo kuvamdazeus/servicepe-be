@@ -1,5 +1,3 @@
-import deleteJob from "./job/delete-job";
-
 require("dotenv").config();
 
 import * as functions from "firebase-functions";
@@ -21,10 +19,12 @@ import createJobProfileOffer from "./offer/create-job-profile-offer";
 // import getRooms from "./chats/get-rooms";
 import generateResources from "./learn/generate-resources";
 import updateJob from "./job/update-job";
+import deleteJob from "./job/delete-job";
 import updateJobProfile from "./job-profile/update-job-profile";
 import deleteJobProfile from "./job-profile/delete-job-profile";
 import { getFirebaseApp } from "./firebase";
 import { getFirestore } from "firebase-admin/firestore";
+import createExchange from "./exchange/create-exchange";
 
 const firebaseApp = getFirebaseApp();
 const firestore = getFirestore(firebaseApp);
@@ -69,6 +69,9 @@ expressInstance.get("/dashboard", auth, getDashboardData);
 
 // ROUTE: /offer
 expressInstance.put("/offer/jobOffer", auth, createJobOffer).put("/offer/jobProfileOffer", auth, createJobProfileOffer);
+
+// ROUTE: /exchange
+expressInstance.put("/exchange", auth, createExchange);
 
 // expressInstance.get("/chats/rooms", auth, getRooms);
 

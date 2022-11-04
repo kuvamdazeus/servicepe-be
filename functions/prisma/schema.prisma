@@ -19,6 +19,7 @@ model User {
   jobs             Job[]
   jobProfiles      JobProfile[]
   jobProfileOffers JobProfileOffer[] // tracks the offers made to worker job profile
+  exchangeRequests ExchangeRequest[]
 }
 
 model Verification {
@@ -81,6 +82,22 @@ model JobProfileOffer {
 
   user       User       @relation(fields: [user_id], references: [id])
   jobProfile JobProfile @relation(fields: [job_profile_id], references: [id])
+}
+
+model ExchangeRequest {
+  id        String @id @default(uuid())
+  from_user String
+
+  product_images Json // string[3]
+  generic_name   String // categorised
+  brand          String // categorised
+
+  return_value_inr            Int?
+  return_product_generic_name String?
+  return_product_brand        String?
+  return_service_name String?
+
+  user User @relation(fields: [from_user], references: [id])
 }
 
 //model ChatRoom {
